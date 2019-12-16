@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Snake JS</title>
+    </head>
+    <body>
+        <div style="text-align: center"><!--plus moderne et correct que la balise <center> -->
+        <h1> Jeu du serpent en version javascript</h1>
+        
+        <!-- défini un canvas avec une bordure de 2px -->
+        <canvas id="snakeplane" style="border: 2px solid #33ff75"></canvas></div>
+        
+        <script>
+            
+            var largeur = 57 * 14, hauteur = 41 * 14; /* dimensions du canvas en fonction du diamètre de la tête du serpent pour que les déplacements tombent justs */
+            
+            var monCanvas = document.getElementById('snakeplane'); /* récupère le canvas */
+            var ctx = monCanvas.getContext('2d'); /* défini un context 2D, ctx <=> context */
+            
+            monCanvas.width = largeur;
+            monCanvas.height = hauteur;
+            
+            var snakeHead = {} /* cette variable va enregistrer les informations utiles sur la 'tete' du serpent dans un tableau associatif */
+            
+            snakeHead.coordX = largeur / 2; /* permet de centrer la position de la 'tete' du serpent sur la largeur au début du jeu */
+            snakeHead.coordY = hauteur / 2; /* permet de centrer la position de la 'tete' du serpent sur la hauteur au début du jeu */
+            snakeHead.couleur = "blue"; /* choisir la couleur du serpent */
+            
+            var jeu = setInterval(boucleDeJeu, 1000 / 30); /* détermine une vitesse de fonctionnement à 30 répétitions par seconde, déclarer la répétition dans une variable permetra de l'arrêter en cas d'échec. */
+            
+            function boucleDeJeu() { /* boucle principale du jeu */
+                
+                ctx.fillStyle="#f7fdaf"; /* choisir une couleur de fond */
+                ctx.fillRect(0,0,largeur,hauteur) ; /* efface l'intégralité du canvas avec la couleur de fond */
+                
+                deplace(); /*fonction qui permet de déplacer la 'tete' du serpent, étape 2*/
+                estampiller(snakeHead); /* la fonction estampiller permet de déssiner un élément sur le canvas */
+                test(); /* vérifie si la partie n'est pas perdue ou si la cible est atteinte, étape 2 */
+            }
+            
+            function estampiller(element){ /*cette fonction sera utilisée pour afficher chaque élément du serpent ainsi que celle de la cible. */
+                ctx.fillStyle = element.couleur;
+                ctx.beginPath();
+                ctx.arc(element.coordX, element.coordY, 7, 0, 2*Math.PI);
+                ctx.fill();
+            }
+            
+            /* STOP!!!!! -> à ce stade la page doit afficher un grand rectangle avec un petit cercle d'un rayon de 7px au milieu, ne passer pas à la suite si ça ne marche pas. Ne pas oublier les balises /script /body et /html à la fin du document */
+            
+            
+            /* étape 2 : le déplacement, on récupère la frappe des touches du clavier pour déterminer le déplacement  du serpent. */
+            /* !!!!!!!!!!!!!! > décommenter les fonction deplace() et test() dans la boucleDeJeu() */
+            
+            var direct = { X : 2 , Y : 0 }; /* cette variabled enregistre un "vecteur de déplacement", la valeur "direct.X = 2" permet de bloquer la fonction 'déplace()' tant qu'aucune touche n'a été saisie */
+            
+            window.addEventListener('keydown', direction); /* cette commande permet d'"écouter" les touches claviers et envoie l'information à la fonction direction */
+            
+            function direction(e) {
+                switch (e.key) {
+                    case "ArrowUp" : direct.X = 0 ; direct.Y = -1; // flèche du haut
+                        break;
+                    case "ArrowDown" : direct.X = 0 ; direct.Y = 1; // flèche du bas
+                        break;
+                    case "ArrowLeft" : direct.X = -1 ; direct.Y = 0; // flèche de gauche
+                        break;
+                    case "ArrowRight" : direct.X = 1 ; direct.Y = 0; // flèche de droite
+                        break;
+                    default:break; // ignore toutes les autres touches
+                }
+            }
+            
+            function deplace(){
+                if (direct.X != 2) { /* rend le déplacement impossible tant qu'aucune touche n'a été pressée */
+                    snakeHead.coordX += 14 * direct.X; /* déplace la coordonée 'X' de la 'tete' du serpent d'une distance qui est 2 fois le rayon de la tête, si les flèches droite ou gauche ont été préssées */
+                    snakeHead.coordY += 14 * direct.Y; /* déplace la coordonnée 'Y' de la 'tete' du serpent d'une distance qui est 2 fois le rayon de la tête, si les flèches haut ou bas ont été pressées. */
+                }
+            }
+            
+            function test(){
+                if (snakeHead.coordX < 7 || snakeHead.coordX > largeur - 7 || snakeHead.coordY < 7 || snakeHead.coordY > hauteur - 7 ) { stop() } // si on touche un bord on arrete tout.
+                // à prévoir -> si le serpent ce mort la queue
+                // à prévoir -> si le serpent touche la cible
+            }
+            
+            function stop() {
+                clearInterval(jeu); // permet d'arrêter la répétition de boucleDeJeu()
+                alert('perdu !!'); // prévenir que la partie est terminée.
+            }
+        </script>
+    </body>
+</html>
