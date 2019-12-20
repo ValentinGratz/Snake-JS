@@ -118,7 +118,6 @@
                     taille += 5; //augmenter la taille de 5 <- etape 4
                     newPomme() ; // créer une nouvelle cible <- etape 4
                 }
-                score = score++;
             }
             
             function stop() {
@@ -127,8 +126,9 @@
                 
                 //etape 6 affichage du score
                 
-                
-                alert('Vous avez  '+ score + '  points');
+                taille -= 5;
+                taille /= 5;
+                alert('Vous avez  '+ taille + '  points');
                 
                 //fin étape 6
                 
